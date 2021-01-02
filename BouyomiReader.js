@@ -1,6 +1,7 @@
 const server = "http://localhost:50095"
 const logfile = "D:\\マインクラフト\\mmc-stable-win32\\MultiMC\\instances\\1.16.4\\.minecraft\\logs\\latest.log"
-const interval = 1500
+const chatpattern = /(\<.+\> .*)/
+const updateinterval = 1500
 
 const http = require("http")
 const fs = require("fs")
@@ -13,7 +14,7 @@ fs.readFile(logfile, (err, rawdata) => {
     const initbuf = new Buffer.from(rawdata);
     const initdata = iconv.decode(initbuf, "Shift_JIS");
     lines = initdata.split("\r\n").length - 1
-    setInterval(checkChat, interval)
+    setInterval(checkChat, updateinterval)
 })
 
 function checkChat() {
@@ -32,7 +33,7 @@ function checkChat() {
 }
 
 function extractChat(text) {
-    text.match(/(\<.+\> .*)/)
+    text.match(chatpattern)
     if (!RegExp.$1) return;
     const message = RegExp.$1;
     sendBouyomiHttp(message)
@@ -41,7 +42,7 @@ function extractChat(text) {
 function sendBouyomiHttp(message) {
     const req = http.get(encodeURI(server + "/talk?text=" + message))
     req.on("error", (err) => {
-        // console.log(err);
+        console.log(err);
         req.abort()
         req.destroy()
         req.end()
