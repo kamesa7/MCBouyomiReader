@@ -1,6 +1,7 @@
 const server = "http://localhost:50095"
-const logfile = "D:\\マインクラフト\\mmc-stable-win32\\MultiMC\\instances\\1.16.4\\.minecraft\\logs\\latest.log"
-const chatpattern = /(\<.+\> .*)/
+const logfile = "D:\\マインクラフト\\mmc-stable-win32\\MultiMC\\instances\\1.16.4-mod\\.minecraft\\logs\\latest.log"
+const chatpattern = /(\<.+\>) (.+)/
+const nihongopattern = /[A-Za-z0-9 ]+ (.+)/
 const updateinterval = 1500
 
 const http = require("http")
@@ -34,9 +35,15 @@ function checkChat() {
 
 function extractChat(text) {
     text.match(chatpattern)
-    if (!RegExp.$1) return;
-    const message = RegExp.$1;
-    sendBouyomiHttp(message)
+    const name = RegExp.$1;
+    const message = RegExp.$2;
+    if (!name || !message) return;
+    if (message.match(nihongopattern)) {
+        const nihongo = RegExp.$1;
+        sendBouyomiHttp(name + " " + nihongo)
+    } else {
+        sendBouyomiHttp(name + " " + message)
+    }
 }
 
 function sendBouyomiHttp(message) {
