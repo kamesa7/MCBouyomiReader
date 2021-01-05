@@ -1,7 +1,7 @@
 const server = "http://localhost:50095"
 const logfile = "D:\\マインクラフト\\mmc-stable-win32\\MultiMC\\instances\\1.16.4-mod\\.minecraft\\logs\\latest.log"
 const chatpattern = /(\<.+\>) (.+)/
-const nihongopattern = /[A-Za-z0-9 ]+ (.+)/
+const nihongopattern = / (\(.+\))$/
 const updateinterval = 1500
 
 const http = require("http")
